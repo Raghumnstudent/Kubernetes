@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: path-based-ingress
+spec:
+  rules:
+  - host: nginx-app 
+    http: 
+      paths:
+      #nginx application directly serving in port(service_ip:port),not in any path. not require any path
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-service
+            port:
+              number: 8090 
+      #python application is serving in /demo path of service_ip:port
+      - path: /demo
+        pathType: Prefix
+        backend:
+          service:
+            name: python-web-app-service
+            port:
+              #port number,where service is serving the application,create the service with clusterIP type,use only cluster ip port.
+              #anyway if you create the service with nodePort,kubernetes will create cluster ip into service and dsn into service.
+              #if application is serving in node port,we can't mention the node port here,we have mention the cluster ip port.
+              #Node port service type is used when need to provide access to users whoever have access kuberetes worker nodes.
+              number: 8900 

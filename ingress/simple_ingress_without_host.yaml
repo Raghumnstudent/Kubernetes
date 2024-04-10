@@ -1,0 +1,21 @@
+#we are creating the ingress resocurce and mentioning the which ingress class to use.
+#ingress class is used mention the ingress controller,if you have mutiple ingress controllers in cluster,
+#we have mention which ingress controller need to be used for particular ingress object
+#
+#In minikube,i setup the nginx ingress controller and using that
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+spec:
+  rules:
+  - http:
+      paths:
+      - path: "/demo"
+        pathType: Prefix
+        backend:
+          service:
+            name: python-web-app-service
+            port:
+              number: 80
+

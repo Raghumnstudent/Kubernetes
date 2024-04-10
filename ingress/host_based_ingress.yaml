@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: host-based-ingress
+spec:
+  rules:
+  - host: nginx.application
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: nginx-service
+            port:
+              number: 8090 
+  - host: python.application
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/demo"
+        backend:
+          service:
+            name: python-web-app-service
+            port:
+              number: 8900 

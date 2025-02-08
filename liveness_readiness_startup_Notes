@@ -1,0 +1,47 @@
+
+
+
+Liveness probe:
+*kubelet will perfoms the liveness check based on time mention(periodSeconds) in yaml,
+when liveness catch the dead lock in container and show the no progress in container, 
+it will infrom kubelet to restart the container.
+*kubelet uses the liveness probe to know when to restart the container.
+
+Important:
+ periodSeconds field specifies that the kubelet should perform a liveness probe after how many seconds
+ initialDelaySeconds is used to mention after how many seconds the first prob need to be check from kubelet.
+    
+
+Readiness probe:
+*The kubelet uses readiness probes to know when a container is ready to start accepting traffic.
+A Pod is considered ready when all of its containers are ready.
+* One use of this signal is to control which Pods are used as backends for Services.
+ When a Pod is not ready, it is removed from Service load balancers.
+
+Impartant:
+same as liveness,
+ The kubelet will continue to run readiness check every 10 seconds if we mention periodSeconds with 10
+
+
+Startup probe:
+*The kubelet uses startup probes to know when a container application has started. 
+*If such a probe is configured, liveness and readiness probes do not start until it succeeds, making sure those probes don't interfere with the application startup. 
+*This can be used to adopt liveness checks on slow starting containers, avoiding them getting killed by the kubelet before they are up and running.
+
+Protect slow starting containers with startup probes:
+
+startupProbe:
+  httpGet:
+    path: /healthz
+    port: liveness-port
+  failureThreshold: 30
+  periodSeconds: 10
+  
+Thanks to the startup probe, the application will have a maximum of 5 minutes (30 * 10 = 300s) to finish its startup.
+Once the startup probe has succeeded once, the liveness probe takes over to provide a fast response to container deadlocks. If the startup probe never succeeds, the container is killed after 300s and subject to the pod's restartPolicy.
+
+
+
+
+
+
